@@ -1,0 +1,34 @@
+server:
+  port: 8082
+
+
+spring:
+  application:
+    name: account-service
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    # 订单 order 数据源配置
+    url: jdbc:mysql://192.168.0.128:3306/seata_amount?useSSL=false&useUnicode=true&characterEncoding=UTF-8
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: 123456
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.0.128:8848
+
+seata:
+  application-id: ${spring.application.name} # Seata 应用编号，默认为 ${spring.application.name}
+  tx-service-group: order-service-group # Seata 事务组编号，用于 TC 集群名
+  # 服务配置项，可以不用写file文件
+  service:
+    # 虚拟分组的映射
+    vgroup-mapping:
+      order-service-group: default
+  # Seata 注册中心配置项，可以不用写nacos文件
+  registry:
+    type: nacos # 注册中心类型，默认为 file
+    nacos:
+      cluster: default # 使用的 Seata 分组
+      namespace: # Nacos 命名空间
+      serverAddr: ${spring.cloud.nacos.discovery.server-addr} # Nacos 服务地址
